@@ -67,3 +67,81 @@ class Inventory:
 
     def get_all_products(self):
         return self.__products
+
+
+# ==========================================
+# 3. MAIN PROGRAM 
+# ==========================================
+def show_menu():
+    print("\n------- MENU -------")
+    print("1. Display All Products")
+    print("2. Add Product")
+    print("3. Update Stock")
+    print("4. Search Product")
+    print("5. Save Inventory")
+    print("6. Exit")
+    print("--------------------")
+
+# --- Start Program ---
+print("=" * 35)
+print("INVENTORY MANAGEMENT SYSTEM")
+print("=" * 35)
+
+# Create Inventory object
+inventory = Inventory()
+
+while True:
+    show_menu()
+    option = input("\nEnter option: ").strip()
+
+    if option == "1":
+        inventory.display_all()
+
+    elif option == "2":
+        print("\nAdd New Product")
+        p_id = input("Product ID: ").strip()
+        p_name = input("Product Name: ").strip()
+        try:
+            p_price = float(input("Price: ").strip())
+            p_stock = int(input("Stock Quantity: ").strip())
+            new_product = Product(p_id, p_name, p_price, p_stock)
+            inventory.add_product(new_product)
+            print("Product added successfully!")
+        except ValueError:
+            print("Invalid price or stock quantity. Product not added.")
+
+    elif option == "3":
+        print("\nUpdate Stock")
+        p_id = input("Enter Product ID: ").strip()
+        product = inventory.search_product(p_id)
+        if product is not None:
+            print("Product Found:")
+            print("Name: " + product.get_name())
+            print("Current Stock: " + str(product.get_stock()))
+            try:
+                new_stock = int(input("New Stock Quantity: ").strip())
+                product.update_stock(new_stock)
+                print("Stock updated successfully!")
+            except ValueError:
+                print("Invalid stock quantity.")
+        else:
+            print("Product not found.")
+
+    elif option == "4":
+        print("\nSearch Product")
+        p_id = input("Enter Product ID: ").strip()
+        product = inventory.search_product(p_id)
+        if product is not None:
+            print("\nProduct Found")
+            print("-" * 35)
+            print(product.display_information())
+            print("-" * 35)
+        else:
+            print("Product not found.")
+
+    elif option == "5":
+        print("Saving not implemented yet.") # Placeholder
+
+    elif option == "6":
+        print("Thank you for using Inventory Management System. Program terminated.")
+        break
