@@ -72,6 +72,34 @@ class Inventory:
 # ==========================================
 # 3. MAIN PROGRAM 
 # ==========================================
+
+def load_inventory():
+    inventory = Inventory()
+    try:
+        file = open("inventory.json", "r")
+        data = json.load(file)
+        file.close()
+        
+        for item in data:
+            product = Product(item["id"], item["name"], item["price"], item["stock"])
+            inventory.add_product(product)
+            
+        print("inventory.json found. Inventory loaded successfully.")
+    except FileNotFoundError:
+        print("No inventory file found. Starting with an empty inventory.")
+    
+    return inventory
+
+def save_inventory(inventory):
+    file = open("inventory.json", "w")
+    data_to_save = []
+    for product in inventory.get_all_products():
+        data_to_save.append(product.to_dict())
+        
+    json.dump(data_to_save, file, indent=4)
+    file.close()
+    print("Inventory saved successfully to inventory.json.")
+
 def show_menu():
     print("\n------- MENU -------")
     print("1. Display All Products")
@@ -87,8 +115,7 @@ print("=" * 35)
 print("INVENTORY MANAGEMENT SYSTEM")
 print("=" * 35)
 
-# Create Inventory object
-inventory = Inventory()
+inventory = load_inventory() 
 
 while True:
     show_menu()
@@ -140,8 +167,13 @@ while True:
             print("Product not found.")
 
     elif option == "5":
-        print("Saving not implemented yet.") # Placeholder
+        save_inventory(inventory)
 
     elif option == "6":
+        print("\nSaving inventory before exit...")
+        save_inventory(inventory)
         print("Thank you for using Inventory Management System. Program terminated.")
         break
+
+    else:
+        print("Invalid option. Please try again.")

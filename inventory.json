@@ -3,7 +3,7 @@
         "id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 15
+        "stock": 20
     },
     {
         "id": "P002",
@@ -21,7 +21,7 @@
         "id": "P004",
         "name": "Monitor",
         "price": 299.99,
-        "stock": 10
+        "stock": 15
     },
     {
         "id": "P005",
@@ -34,5 +34,17 @@
         "name": "Ipad",
         "price": 1000.0,
         "stock": 50
+    },
+    {
+        "id": "P007",
+        "name": "Ipad Charger",
+        "price": 20.0,
+        "stock": 50
+    },
+    {
+        "id": "P008",
+        "name": "Iphone lightning cable",
+        "price": 20.0,
+        "stock": 30
     }
 ]
