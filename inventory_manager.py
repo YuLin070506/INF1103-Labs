@@ -37,3 +37,33 @@ class Product:
         }
 
 
+# ==========================================
+# 2. INVENTORY CLASS 
+# ==========================================
+class Inventory:
+    def __init__(self):
+        # private list to store Product objects
+        self.__products = []
+
+    def add_product(self, product):
+        self.__products.append(product)
+
+    def search_product(self, product_id):
+        for product in self.__products:
+            if product.get_id() == product_id:
+                return product
+        return None # return None if not found
+
+    def display_all(self):
+        if len(self.__products) == 0:
+            print("Inventory is empty.")
+            return
+
+        print("\nCurrent Inventory")
+        print("-" * 35)
+        for product in self.__products:
+            print(product.display_information())
+        print("-" * 35)
+
+    def get_all_products(self):
+        return self.__products
