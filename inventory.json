@@ -1,50 +1,18 @@
 [
     {
-        "id": "P001",
-        "name": "Laptop",
+        "id": "p001",
+        "name": "laptop",
         "price": 1200.0,
-        "stock": 20
+        "stock": 10,
+        "type": "physical",
+        "weight": 2.5
     },
     {
         "id": "P002",
-        "name": "Mouse",
-        "price": 25.5,
-        "stock": 50
-    },
-    {
-        "id": "P003",
-        "name": "Keyboard",
-        "price": 45.0,
-        "stock": 10
-    },
-    {
-        "id": "P004",
-        "name": "Monitor",
-        "price": 299.99,
-        "stock": 15
-    },
-    {
-        "id": "P005",
-        "name": "Charger",
-        "price": 30.0,
-        "stock": 20
-    },
-    {
-        "id": "P006",
-        "name": "Ipad",
-        "price": 1000.0,
-        "stock": 50
-    },
-    {
-        "id": "P007",
-        "name": "Ipad Charger",
-        "price": 20.0,
-        "stock": 50
-    },
-    {
-        "id": "P008",
-        "name": "Iphone lightning cable",
-        "price": 20.0,
-        "stock": 30
+        "name": "Antivirus",
+        "price": 50.0,
+        "stock": 100,
+        "type": "digital",
+        "download_size": 500.0
     }
 ]

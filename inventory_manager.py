@@ -2,7 +2,15 @@ import json
 from abc import ABC, abstractmethod
 
 # ==========================================
-# 1. PRODUCT CLASS 
+# 1. INTERFACES CLASS 
+# ==========================================
+class CanBeShipped(ABC):
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        pass
+
+# ==========================================
+# 2. PRODUCT CLASS 
 # ==========================================
 class Product(ABC):
     def __init__(self, product_id, name, price, stock):
@@ -40,7 +48,7 @@ class Product(ABC):
         pass
 
 # ==========================================
-# 2. SUBCLASSES 
+# 3. SUBCLASSES 
 # ==========================================
 class PhysicalProduct(Product, CanBeShipped):
     def __init__(self, product_id, name, price, stock, weight):
@@ -84,15 +92,39 @@ class DigitalProduct(Product):
         data["download_size"] = self.__download_size
         return data
 
+# ==========================================
+# 4. INVENTORY CLASS
+# ==========================================
+class Inventory:
+    def __init__(self):
+        self.__products = []
+
+    def add_product(self, product):
+        self.__products.append(product)
+
+    def search_product(self, product_id):
+        for product in self.__products:
+            if product.get_id() == product_id:
+                return product
+        return None
+
+    def display_all(self):
+        if len(self.__products) == 0:
+            print("Inventory is empty.")
+            return
+
+        print("\nCurrent Inventory")
+        print("-" * 35)
+        for product in self.__products:
+            print(product.display_information())
+        print("-" * 35)
+
+    def get_all_products(self):
+        return self.__products
 
 # ==========================================
-# 3. INTERFACES
+# 5. MAIN PROGRAM
 # ==========================================
-class CanBeShipped(ABC):
-    @abstractmethod
-    def calculate_shipping_cost(self):
-        pass
-
 def load_inventory():
     inventory = Inventory()
     try:
@@ -138,85 +170,87 @@ def show_menu():
     print("--------------------")
 
 # --- Start Program ---
-print("=" * 35)
-print("INVENTORY MANAGEMENT SYSTEM")
-print("=" * 35)
+if __name__ == "__main__":
+    # --- Start Program ---
+    print("=" * 35)
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("=" * 35)
 
-inventory = load_inventory() 
+    inventory = load_inventory() 
 
-while True:
-    show_menu()
-    option = input("\nEnter option: ").strip()
+    while True:
+        show_menu()
+        option = input("\nEnter option: ").strip()
 
-    if option == "1":
-        inventory.display_all()
+        if option == "1":
+            inventory.display_all()
 
-    elif option == "2":
-        print("\nAdd New Product")
-        p_id = input("Product ID: ").strip()
-        p_name = input("Product Name: ").strip()
-        
-        print("Product Type:")
-        print("1. Physical Product")
-        print("2. Digital Product")
-        p_type = input("Select type (1 or 2): ").strip()
-
-        try:
-            p_price = float(input("Price: ").strip())
-            p_stock = int(input("Stock Quantity: ").strip())
+        elif option == "2":
+            print("\nAdd New Product")
+            p_id = input("Product ID: ").strip()
+            p_name = input("Product Name: ").strip()
             
-            if p_type == "1":
-                p_weight = float(input("Weight (kg): ").strip())
-                new_product = PhysicalProduct(p_id, p_name, p_price, p_stock, p_weight)
-            elif p_type == "2":
-                p_size = float(input("Download Size (MB): ").strip())
-                new_product = DigitalProduct(p_id, p_name, p_price, p_stock, p_size)
-            else:
-                print("Invalid product type. Product not added.")
-                continue # skip to next loop iteration
+            print("Product Type:")
+            print("1. Physical Product")
+            print("2. Digital Product")
+            p_type = input("Select type (1 or 2): ").strip()
 
-            inventory.add_product(new_product)
-            print("Product added successfully!")
-        except ValueError:
-            print("Invalid numeric input. Product not added.")
-
-    elif option == "3":
-        print("\nUpdate Stock")
-        p_id = input("Enter Product ID: ").strip()
-        product = inventory.search_product(p_id)
-        if product is not None:
-            print("Product Found:")
-            print("Name: " + product.get_name())
-            print("Current Stock: " + str(product.get_stock()))
             try:
-                new_stock = int(input("New Stock Quantity: ").strip())
-                product.update_stock(new_stock)
-                print("Stock updated successfully!")
+                p_price = float(input("Price: ").strip())
+                p_stock = int(input("Stock Quantity: ").strip())
+                
+                if p_type == "1":
+                    p_weight = float(input("Weight (kg): ").strip())
+                    new_product = PhysicalProduct(p_id, p_name, p_price, p_stock, p_weight)
+                elif p_type == "2":
+                    p_size = float(input("Download Size (MB): ").strip())
+                    new_product = DigitalProduct(p_id, p_name, p_price, p_stock, p_size)
+                else:
+                    print("Invalid product type. Product not added.")
+                    continue # skip to next loop iteration
+
+                inventory.add_product(new_product)
+                print("Product added successfully!")
             except ValueError:
-                print("Invalid stock quantity.")
+                print("Invalid numeric input. Product not added.")
+
+        elif option == "3":
+            print("\nUpdate Stock")
+            p_id = input("Enter Product ID: ").strip()
+            product = inventory.search_product(p_id)
+            if product is not None:
+                print("Product Found:")
+                print("Name: " + product.get_name())
+                print("Current Stock: " + str(product.get_stock()))
+                try:
+                    new_stock = int(input("New Stock Quantity: ").strip())
+                    product.update_stock(new_stock)
+                    print("Stock updated successfully!")
+                except ValueError:
+                    print("Invalid stock quantity.")
+            else:
+                print("Product not found.")
+
+        elif option == "4":
+            print("\nSearch Product")
+            p_id = input("Enter Product ID: ").strip()
+            product = inventory.search_product(p_id)
+            if product is not None:
+                print("\nProduct Found")
+                print("-" * 35)
+                print(product.display_information())
+                print("-" * 35)
+            else:
+                print("Product not found.")
+
+        elif option == "5":
+            save_inventory(inventory)
+
+        elif option == "6":
+            print("\nSaving inventory before exit...")
+            save_inventory(inventory)
+            print("Thank you for using Inventory Management System. Program terminated.")
+            break
+
         else:
-            print("Product not found.")
-
-    elif option == "4":
-        print("\nSearch Product")
-        p_id = input("Enter Product ID: ").strip()
-        product = inventory.search_product(p_id)
-        if product is not None:
-            print("\nProduct Found")
-            print("-" * 35)
-            print(product.display_information())
-            print("-" * 35)
-        else:
-            print("Product not found.")
-
-    elif option == "5":
-        save_inventory(inventory)
-
-    elif option == "6":
-        print("\nSaving inventory before exit...")
-        save_inventory(inventory)
-        print("Thank you for using Inventory Management System. Program terminated.")
-        break
-
-    else:
-        print("Invalid option. Please try again.")
+            print("Invalid option. Please try again.")
