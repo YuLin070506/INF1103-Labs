@@ -100,8 +100,15 @@ def load_inventory():
         data = json.load(file)
         file.close()
         
+        # Check the type identifier to instantiate the correct class
         for item in data:
-            product = Product(item["id"], item["name"], item["price"], item["stock"])
+            if item.get("type") == "physical":
+                product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"])
+            elif item.get("type") == "digital":
+                product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"])
+            else:
+                # Fallback for older data just in case
+                continue 
             inventory.add_product(product)
             
         print("inventory.json found. Inventory loaded successfully.")
@@ -148,14 +155,30 @@ while True:
         print("\nAdd New Product")
         p_id = input("Product ID: ").strip()
         p_name = input("Product Name: ").strip()
+        
+        print("Product Type:")
+        print("1. Physical Product")
+        print("2. Digital Product")
+        p_type = input("Select type (1 or 2): ").strip()
+
         try:
             p_price = float(input("Price: ").strip())
             p_stock = int(input("Stock Quantity: ").strip())
-            new_product = Product(p_id, p_name, p_price, p_stock)
+            
+            if p_type == "1":
+                p_weight = float(input("Weight (kg): ").strip())
+                new_product = PhysicalProduct(p_id, p_name, p_price, p_stock, p_weight)
+            elif p_type == "2":
+                p_size = float(input("Download Size (MB): ").strip())
+                new_product = DigitalProduct(p_id, p_name, p_price, p_stock, p_size)
+            else:
+                print("Invalid product type. Product not added.")
+                continue # skip to next loop iteration
+
             inventory.add_product(new_product)
             print("Product added successfully!")
         except ValueError:
-            print("Invalid price or stock quantity. Product not added.")
+            print("Invalid numeric input. Product not added.")
 
     elif option == "3":
         print("\nUpdate Stock")
