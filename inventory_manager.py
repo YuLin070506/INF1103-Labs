@@ -1,11 +1,11 @@
 import json
+from abc import ABC, abstractmethod
 
 # ==========================================
 # 1. PRODUCT CLASS 
 # ==========================================
-class Product:
+class Product(ABC):
     def __init__(self, product_id, name, price, stock):
-        # private attributes 
         self.__product_id = product_id
         self.__name = name
         self.__price = float(price)
@@ -16,7 +16,6 @@ class Product:
 
     def display_information(self):
         return f"ID: {self.__product_id} | Name: {self.__name} | Price: ${self.__price:.2f} | Stock: {self.__stock}"
-
     # Getters
     def get_id(self):
         return self.__product_id
@@ -36,37 +35,51 @@ class Product:
             "stock": self.__stock
         }
 
+    @abstractmethod
+    def get_fullment_info(self):
+        pass
 
 # ==========================================
-# 2. INVENTORY CLASS 
+# 2. SUBCLASSES 
 # ==========================================
-class Inventory:
-    def __init__(self):
-        # private list to store Product objects
-        self.__products = []
+class PhysicalProduct(Product):
+    def __init__(self, product_id, name, price, stock, weight):
+        super().__init__(product_id, name, price, stock)
+        self.__weight = float(weight)
 
-    def add_product(self, product):
-        self.__products.append(product)
+    def display_information(self):
+        # Reuse parent method, add weight (Lab 2.1)
+        base_info = super().display_information()
+        return f"{base_info} | Weight: {self.__weight} kg"
 
-    def search_product(self, product_id):
-        for product in self.__products:
-            if product.get_id() == product_id:
-                return product
-        return None # return None if not found
+    def get_fullment_info(self):
+        return "This product requires physical shipping."
 
-    def display_all(self):
-        if len(self.__products) == 0:
-            print("Inventory is empty.")
-            return
+    def to_dict(self):
+        data = super().to_dict()
+        data["type"] = "physical"
+        data["weight"] = self.__weight
+        return data
 
-        print("\nCurrent Inventory")
-        print("-" * 35)
-        for product in self.__products:
-            print(product.display_information())
-        print("-" * 35)
 
-    def get_all_products(self):
-        return self.__products
+class DigitalProduct(Product):
+    def __init__(self, product_id, name, price, stock, download_size):
+        super().__init__(product_id, name, price, stock)
+        self.__download_size = float(download_size)
+
+    def display_information(self):
+        # Reuse parent method, add download size (Lab 2.1)
+        base_info = super().display_information()
+        return f"{base_info} | Download Size: {self.__download_size} MB"
+
+    def get_fullment_info(self):
+        return "This product is delivered digitally."
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["type"] = "digital"
+        data["download_size"] = self.__download_size
+        return data
 
 
 # ==========================================
