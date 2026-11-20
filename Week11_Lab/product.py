@@ -8,6 +8,10 @@ class CanBeShipped(ABC):
 
 class Product(ABC):
     def __init__(self, product_id: str, name: str, price: float, stock_quantity: int, supplier: Supplier):
+        if price <= 0:
+            raise ValueError("Price must be greater than zero.")
+        if stock_quantity < 0:
+            raise ValueError("Stock quantity cannot be negative.")
         self.__product_id: str = product_id
         self.__name: str = name
         self.__price: float = float(price)
