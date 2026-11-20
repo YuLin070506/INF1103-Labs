@@ -20,7 +20,9 @@ class Order:
         total = 0.0
         for line in self.order_lines:
             total += line.calculate_subtotal()
-        return total
+        
+        # This line is crucial! It applies the strategy.
+        return self.discount.apply(total) 
 
     def display_order(self) -> None:
         print(f"\n--- Order ID: {self.order_id} ---")
